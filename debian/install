@@ -3,6 +3,4 @@ wallpaper/*         /usr/share/wallpaper
 wallpaper-antix/*   /usr/share/wallpaper-antix
 desktop-settings/*  /usr/share/desktop-settings
 desktop-session/*   /etc/skel/.desktop-session       
-changelog.gz        /usr/share/doc/wallpaper-antix
-copyright           /usr/share/doc/wallpaper-antix
 bin/*               /usr/local/bin  
