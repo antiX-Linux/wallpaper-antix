@@ -3,10 +3,10 @@
 # xset-root, desktop_tool, python os mod, python re mod, python sys mod
 # File Name: wallpaper.py
 # Version: 2.2
-# Purpose: allows the user to select a meathod for setting the wallpaper, 
+# Purpose: allows the user to select a meathod for setting the wallpaper,
 #          as well as a wallpaper / color / default folder based on their
 #          choice of options. Requires window manager session codename to
-#          be recorded in $DESKTOP_CODE. 
+#          be recorded in $DESKTOP_CODE.
 # Authors: Dave
 
 # Copyright (C) antiXCommunity http://antix.freeforums.org
@@ -37,7 +37,7 @@ from desktop_tool import DesktopToolWidget
 from desktop_tool import get_icon as get_icon
 
 #Set variables
-class Var: 
+class Var:
     def write(self, variable, item):
         if variable == "SAVED":
             WRITE_FILE = Var.CONF_USER_FILE_WALLPAPERS+".tmp"
@@ -47,7 +47,7 @@ class Var:
             WRITE_FILE = Var.CONF_USER_FILE+".tmp"
             READ_FILE = Var.CONF_USER_FILE
             CONF_VARIABLE = variable
-        
+
         text = file((WRITE_FILE), "w")
         text.write("")
         text.close()
@@ -55,15 +55,15 @@ class Var:
         for line in open(READ_FILE, "r").xreadlines():
             if "#" not in line:
                 if re.search(r'^%s=' % (CONF_VARIABLE), line):
-                    text.write (CONF_VARIABLE+"="+item+"\n") 
+                    text.write (CONF_VARIABLE+"="+item+"\n")
                 else:
-                    text.write (line) 
+                    text.write (line)
             else:
-                text.write (line) 
-        text.close()        
+                text.write (line)
+        text.close()
         os.system("mv %s %s" % ((WRITE_FILE), (READ_FILE)))
-                        
-    def read(self):        
+
+    def read(self):
         var = Var
         var.USER_HOME = os.environ['HOME']
         var.DISPLAY = os.environ['DISPLAY']
@@ -75,15 +75,15 @@ class Var:
             var.DESKTOP_CODE = re.sub(r'\n', '', var.DESKTOP_CODE)
         var.DESKTOP = re.sub(r'.*-', '', var.DESKTOP_CODE)
         if re.search(r'rox|space', var.DESKTOP_CODE):
-			var.ICON_MANAGER = True
+            var.ICON_MANAGER = True
         else:
-			var.ICON_MANAGER = False
+            var.ICON_MANAGER = False
         var.CONF_USER_DIR = var.USER_HOME+"/.desktop-session/"
         var.CONF_USER_FILE = var.CONF_USER_DIR+"wallpaper.conf"
         var.CONF_USER_FILE_WALLPAPERS = var.CONF_USER_DIR+"wallpaper-list.conf"
         var.CONF_SYSTEM_FILE = "/etc/desktop-session/wallpaper.conf"
         var.CONF_SYSTEM_FILE_WALLPAPERS = "/etc/desktop-session/wallpaper-list.conf"
-        
+
         if not os.path.exists(var.CONF_USER_DIR):
             os.system("mkdir %s" % (var.CONF_USER_DIR))
             os.system("cp %s %s" % ((var.CONF_SYSTEM_FILE),(var.CONF_USER_DIR)))
@@ -92,7 +92,7 @@ class Var:
             if not os.path.isfile(var.CONF_USER_FILE):
                 os.system("cp %s %s" % ((var.CONF_SYSTEM_FILE),(var.CONF_USER_DIR)))
                 os.system("cp %s %s" % ((var.CONF_SYSTEM_FILE_WALLPAPERS),(var.CONF_USER_DIR)))
-            
+
         for line in open(var.CONF_USER_FILE, "r").xreadlines():
             if "#" not in line:
                 if re.search(r'^.*=', line):
@@ -102,8 +102,8 @@ class Var:
                     OBJECT=(pieces[1])
                     OBJECT = re.sub(r'\n', '', OBJECT)
                     setattr(var, var.VARIABLE, OBJECT)
-        
-        FOUND="0"            
+
+        FOUND="0"
         print var.DESKTOP_CODE
         for line in open(var.CONF_USER_FILE_WALLPAPERS, "r").xreadlines():
             if "#" not in line:
@@ -113,10 +113,10 @@ class Var:
                     OBJECT = re.sub(r'\n', '', OBJECT)
                     var.SAVED = OBJECT
                     FOUND = "1"
-		
+
         if FOUND == "0":
             text = file((var.CONF_USER_FILE_WALLPAPERS), "a")
-            text.write (var.DESKTOP_CODE+"="+var.DEFAULT+"\n") 
+            text.write (var.DESKTOP_CODE+"="+var.DEFAULT+"\n")
             text.close
             var.SAVED = var.DEFAULT
 
@@ -131,7 +131,7 @@ class Error:
         \nplease rerun and correct the following error!\
         \n\n%s\n\"\
         --button=\"gtk-ok:0\"" % (error)
-        os.system(cmdstring) 
+        os.system(cmdstring)
 
 class Build_Picture:
     def build_color(self):
@@ -148,16 +148,20 @@ class Build_Picture:
         Build_Picture.draw.show()
         MainWindow.imagebox.pack_start(Build_Picture.image)
         Build_Picture.image.show()
-          
-    def build_image(self, image):
-        Build_Picture.pix = gtk.gdk.pixbuf_new_from_file_at_scale(image,300,200,True)
-        #Build_Picture.pix = Build_Picture.pix.scale_simple(300, 200, gtk.gdk.INTERP_BILINEAR)
+
+    def build_image(self, imagename):
+        if os.path.isfile(imagename):
+            Build_Picture.pix = gtk.gdk.pixbuf_new_from_file_at_scale(imagename,300,200,True)
+            #Build_Picture.pix = Build_Picture.pix.scale_simple(300, 200, gtk.gdk.INTERP_BILINEAR)
+        else:
+            shmoo = gtk.Image()
+            Build_Picture.pix = shmoo.set_from_file('whatever_empty')
         Build_Picture.image = gtk.image_new_from_pixbuf(Build_Picture.pix)
         MainWindow.imagebox.pack_start(Build_Picture.image)
         Build_Picture.image.show()
-       
+
 class Picture_Select:
-        
+
     def update_preview(self, dialog, preview):
         filename = dialog.get_preview_filename()
         try:
@@ -168,14 +172,14 @@ class Picture_Select:
             have_preview = False
         dialog.set_preview_widget_active(have_preview)
         return
-        
+
     def __init__(self,widget):
         dialog = gtk.FileChooserDialog("Open...", None, gtk.FILE_CHOOSER_ACTION_OPEN,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
         dialog.set_current_folder(os.path.expanduser(Var.FOLDER))
         dialog.set_default_response(gtk.RESPONSE_OK)
         pixbuf = get_icon("wallpaper", 48)
         dialog.set_icon(pixbuf)
-        
+
         filter = gtk.FileFilter()
         filter.set_name(_("Images"))
         filter.add_mime_type("image/png")
@@ -189,22 +193,22 @@ class Picture_Select:
         filter.add_pattern("*.tiff")
         filter.add_pattern("*.tif")
         dialog.add_filter(filter)
-  
+
         previewImage = gtk.Image()
         dialog.set_preview_widget(previewImage)
         dialog.set_use_preview_label(False)
         dialog.connect("update-preview", self.update_preview, previewImage)
-  
+
         response = dialog.run()
         if response == gtk.RESPONSE_OK:
           Var.IMAGE = dialog.get_filename()
           MainWindow.imagebox.remove(Build_Picture.image)
           Build_Picture().build_image(Var.IMAGE)
-          
+
         elif response == gtk.RESPONSE_CANCEL:
-  		  print _("No file selected")  
+          print _("No file selected")
         dialog.destroy()
-      
+
 class Folder_Select:
     def __init__(self,widget):
         dialog = gtk.FileChooserDialog("Open...", None, gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
@@ -212,20 +216,20 @@ class Folder_Select:
         dialog.set_icon(pixbuf)
         dialog.set_current_folder(os.path.expanduser(Var.FOLDER))
         dialog.set_default_response(gtk.RESPONSE_OK)
-        
+
         filter = gtk.FileFilter()
         filter.set_name(_("All Files"))
         filter.add_pattern("*")
         dialog.add_filter(filter)
-        
+
         response = dialog.run()
         if response == gtk.RESPONSE_OK:
           Var.FOLDER = dialog.get_filename()
           Var().write('FOLDER', Var.FOLDER)
         elif response == gtk.RESPONSE_CANCEL:
-  		  print _("No file selected")  
+          print _("No file selected")
         dialog.destroy()
-       
+
 class ColorSelect:
     def color_changed_cb(self, widget):
         Var.CURRENTCOLOR = self.colorseldlg.colorsel.get_current_color()
@@ -267,29 +271,29 @@ class Help:
         help.set_title(_("antiX Wallpaper - help"))
         pixbuf = get_icon("wallpaper", 48)
         help.set_icon(pixbuf)
-  
+
         helptext = gtk.TextBuffer()
         helptext.set_text(HELPTEXT)
-  
+
         view = gtk.TextView();
         view.set_buffer(helptext)
         view.set_editable(False)
         setting =view.get_buffer()
         view.set_wrap_mode(gtk.WRAP_WORD)
         view.show()
-  
+
         textsw = gtk.ScrolledWindow()
         textsw.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_AUTOMATIC)
         textsw.add(view)
         textsw.set_size_request(350,300)
         textsw.show()
-  
+
         help.vbox.pack_start(textsw, True, True, 0)
         help.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
-        
+
         help.run()
         help.destroy()
-        
+
 class About:
     def __init__(self, widget):
         about = gtk.AboutDialog()
@@ -312,22 +316,22 @@ class MainWindow:
             Var().write('STYLE', style)
             Var().write('SAVED', Var.IMAGE)
             os.system("desktop-session-wallpaper &")
-          
+
         def No_Wallpaper():
             Var().write('TYPE', 'color')
             Var().write('COLOR', Var.CURRENTCOLOR)
             os.system("desktop-session-wallpaper &")
-          
+
         def Random_Wallpaper():
             Var().write('TYPE', 'random')
             Var().write('STYLE', style)
             os.system("desktop-session-wallpaper &")
-          
+
         def Random_Wallpaper_Timed():
             Var().write('TYPE', 'random-time')
             Var().write('STYLE', style)
             os.system("desktop-session-wallpaper &")
-        
+
         model = self.combo2.get_model()
         index = self.combo2.get_active()
         style = model[index][0]
@@ -336,7 +340,7 @@ class MainWindow:
         SELECT = model[index][0]
         options = {"Static" : Static, "No Wallpaper" : No_Wallpaper, "Random Wallpaper" : Random_Wallpaper, "Random Wallpaper Timed" : Random_Wallpaper_Timed}
         options[SELECT]()
-    
+
     def combochange (self, widget):
         def Static():
             self.colorbutton.hide()
@@ -345,10 +349,10 @@ class MainWindow:
             if Var.ICON_MANAGER != True:
                 self.combo2.show()
             else:
-		        self.combo2.hide()
+                self.combo2.hide()
             MainWindow.imagebox.remove(Build_Picture.image)
             Build_Picture().build_image(Var.IMAGE)
-            
+
         def No_Wallpaper():
             self.picturebutton.hide()
             self.folderbutton.hide()
@@ -356,7 +360,7 @@ class MainWindow:
             self.colorbutton.show()
             MainWindow.imagebox.remove(Build_Picture.image)
             Build_Picture().build_color()
-            
+
         def Random_Wallpaper():
             self.colorbutton.hide()
             self.picturebutton.hide()
@@ -364,10 +368,10 @@ class MainWindow:
             if Var.ICON_MANAGER != True:
                 self.combo2.show()
             else:
-		        self.combo2.hide()
+                self.combo2.hide()
             MainWindow.imagebox.remove(Build_Picture.image)
             Build_Picture().build_image(Var.DEFAULT)
-            
+
         def Random_Wallpaper_Timed():
             self.colorbutton.hide()
             self.picturebutton.hide()
@@ -375,17 +379,17 @@ class MainWindow:
             if Var.ICON_MANAGER != True:
                 self.combo2.show()
             else:
-		        self.combo2.hide()
+                self.combo2.hide()
             MainWindow.imagebox.remove(Build_Picture.image)
             Build_Picture().build_image(Var.DEFAULT)
-            
+
         model = self.combo.get_model()
         index = self.combo.get_active()
         SELECT = model[index][0]
         options = {"Static" : Static, "No Wallpaper" : No_Wallpaper, "Random Wallpaper" : Random_Wallpaper, "Random Wallpaper Timed" : Random_Wallpaper_Timed}
         options[SELECT]()
-      
-      
+
+
     def __init__(self):
       self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
       self.window.set_position(gtk.WIN_POS_CENTER)
@@ -400,7 +404,7 @@ class MainWindow:
       self.filemenu = gtk.MenuItem(_("Options"))
       self.filemenu.set_submenu(self.menu)
       self.filemenu.show()
-      
+
       self.helpmenu = gtk.ImageMenuItem(gtk.STOCK_HELP)
       self.helpmenu.connect("activate", Help)
       self.helpmenu.show()
@@ -448,11 +452,11 @@ class MainWindow:
           self.combo.append_text("No Wallpaper")
       self.combo.append_text("Random Wallpaper")
       self.combo.append_text("Random Wallpaper Timed")
-      
+
       self.combo.set_active(0)
       self.combo.connect("changed", self.combochange)
       self.combo.show()
-      
+
       self.combo2 = gtk.combo_box_new_text()
       self.combo2.append_text("scale")
       self.combo2.append_text("center")
@@ -461,7 +465,7 @@ class MainWindow:
       if Var.ICON_MANAGER != True:
           self.combo2.show()
       else:
-		  self.combo2.hide()
+          self.combo2.hide()
 
       self.folderbutton = gtk.Button()
       icon_button = DesktopToolWidget('Select Folder', 'document-open-folder', 30, gtk.ORIENTATION_HORIZONTAL, wrap = 7)
@@ -483,21 +487,21 @@ class MainWindow:
       self.colorbutton.connect("clicked", ColorSelect)
       self.colorbutton.set_size_request(100,50)
       self.colorbutton.hide()
-      
+
       self.closebutton = gtk.Button()
       icon_button = DesktopToolWidget('Close', 'dialog-close', 30, gtk.ORIENTATION_HORIZONTAL, wrap = 7)
       self.closebutton.add(icon_button)
       self.closebutton.connect("clicked", lambda w: gtk.main_quit())
       self.closebutton.set_size_request(100,50)
       self.closebutton.show()
-      
+
       self.okbutton = gtk.Button()
       icon_button = DesktopToolWidget('Apply', 'dialog-ok-apply', 30, gtk.ORIENTATION_HORIZONTAL, wrap = 7)
       self.okbutton.add(icon_button)
       self.okbutton.connect("clicked", self.set)
       self.okbutton.set_size_request(100,50)
       self.okbutton.show()
-      
+
       self.buttonbox = gtk.HButtonBox()
       self.buttonbox.pack_start(self.folderbutton)
       self.buttonbox.pack_start(self.colorbutton)
@@ -512,19 +516,19 @@ class MainWindow:
       self.topbox.pack_start(self.combo)
       self.topbox.pack_start(self.combo2)
       self.topbox.show()
-      
+
       self.mainbox = gtk.VBox()
       self.mainbox.pack_start(self.topbox)
       self.mainbox.pack_start(self.buttonbox)
       self.mainbox.show()
-      
+
       self.window.show()
       self.window.add(self.mainbox)
       self.window.connect("destroy", lambda w: gtk.main_quit())
-      
+
     def main(self):
       gtk.main()
-      
+
 Var().read()
 if __name__ == "__main__":
  base = MainWindow()
