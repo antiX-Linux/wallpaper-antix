@@ -1,6 +1,7 @@
-wallpaper.desktop   /usr/share/applications/antix
-wallpaper/*         /usr/share/wallpaper 
-wallpaper-antix/*   /usr/share/wallpaper-antix
-desktop-settings/*  /usr/share/desktop-settings
-desktop-session/*   /etc/skel/.desktop-session       
-bin/*               /usr/local/bin  
+wallpaper.desktop 	usr/share/applications/antix
+wallpaper/*         	usr/share/wallpaper 
+wallpaper-antix/*   	usr/share/wallpaper-antix
+desktop-settings/*  	usr/share/desktop-settings
+desktop-session/*   	etc/skel/.desktop-session       
+bin/*               	usr/local/bin  
+locale/* 		usr/share/locale

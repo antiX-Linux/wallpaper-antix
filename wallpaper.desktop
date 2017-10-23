@@ -1,9 +1,9 @@
 [Desktop Entry]
 Encoding=UTF-8
-Name=wallpaper
+Name=Wallpaper
 Exec=wallpaper.py
 Icon=preferences-desktop-wallpaper
 Terminal=false
 Type=Application
 Categories=Settings;
-NoDisplay=True
+NoDisplay=False
