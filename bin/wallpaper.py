@@ -9,7 +9,7 @@
 #          be recorded in $DESKTOP_CODE.
 # Authors: Dave
 
-# Copyright (C) antiXCommunity http://antix.freeforums.org
+# Copyright (C) antiXCommunity http://antixforums.com
 # License: gplv2
 # This file is free software; you can redistribute it and/or modify it
 # under the terms of the GNU General Public License as published by
@@ -303,7 +303,7 @@ class About:
         about.set_version("2.1.0")
         about.set_copyright("(c)the antiX community")
         about.set_comments(_("This is an antiX application for setting the wallpaper on the preinstalled window managers"))
-        about.set_website("http://antix.freeforums.org")
+        about.set_website("http://antixforums.com")
         pixbuf = get_icon("wallpaper", 48)
         about.set_logo(pixbuf)
         about.run()
